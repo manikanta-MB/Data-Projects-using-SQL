@@ -1,0 +1,16 @@
+1. select case when(class=1) then 'high' when (class=2) then 'average' else 'low' end as authorized_cap,count(*)  from (select ntile(3) over(order by authorized_cap desc) as class from maharashtra) as divied_table group by class order by class;
+
+						(or)
+
+1. select case when(class=1) then '<=1L' when(class=2) then '1L to 10L' when(class=3) then '10L to 1Cr' when(class=4) then '1Cr to 10Cr' when(class=5) then '>10Cr' end as authorized_cap_range,count(*) from (select case when (authorized_cap <= 1e5) then 1 when (authorized_cap <= 1e6) then 2 when (authorized_cap <= 1e7) then 3 when (authorized_cap <= 1e8) then 4 else 5 end as class from maharashtra) as classed_table group by class order by class;
+
+
+2. select case when(length(date_part)>2) then date_part when(cast(year_part as int) >= 0 and cast(year_part as int) <= 21) then '20'||year_part else '19'||year_part end as year,count(*) as no_registrations from (select split_part(registration_date,'-',1) as date_part,split_part(registration_date,'-',3) as year_part from maharashtra ) as divied_table group by year order by no_registrations desc limit 10;
+
+3. select district,count(*) as no_registrations from (select regexp_replace(registered_office_address, '^.* ', '') as pincode from maharashtra where length(split_part(registration_date,'-',1))<3 and split_part(registration_date,'-',3)='15') as temp join zipcode_district on substr(temp.pincode,1,4)=substr(zipcode_district.pincode,1,4) group by district order by no_registrations desc;
+
+
+4. with registrations_by_year_by_pba as (select '20'||year_part as year,pba,count(*) as no_registrations from (select split_part(registration_date,'-',3) as year_part,principal_business_activity as pba from maharashtra where length(split_part(registration_date,'-',1))<3 ) as filtered_table where cast(year_part as int)>=12 and cast(year_part as int)<=21 group by year,pba)
+select year,pba,no_registrations from registrations_by_year_by_pba where pba in (select top_pbas.pba from (select temp.pba,sum(temp.no_registrations) as count from registrations_by_year_by_pba as temp group by pba order by count desc limit 5) as top_pbas) order by year;
+
+
