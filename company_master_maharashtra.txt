@@ -1,16 +1,16 @@
-1. select case when(class=1) then 'high' when (class=2) then 'average' else 'low' end as authorized_cap,count(*)  from (select ntile(3) over(order by authorized_cap desc) as class from maharashtra) as divied_table group by class order by class;
+1. SELECT CASE WHEN(class=1) THEN 'high' WHEN(class=2) THEN 'average' ELSE 'low' END AS authorized_cap,COUNT(*)  FROM (SELECT NTILE(3) OVER(ORDER BY authorized_cap DESC) AS class FROM maharashtra) AS divided_table GROUP BY class ORDER BY class;
 
 						(or)
 
-1. select case when(class=1) then '<=1L' when(class=2) then '1L to 10L' when(class=3) then '10L to 1Cr' when(class=4) then '1Cr to 10Cr' when(class=5) then '>10Cr' end as authorized_cap_range,count(*) from (select case when (authorized_cap <= 1e5) then 1 when (authorized_cap <= 1e6) then 2 when (authorized_cap <= 1e7) then 3 when (authorized_cap <= 1e8) then 4 else 5 end as class from maharashtra) as classed_table group by class order by class;
+1. SELECT CASE WHEN(class=1) THEN '<=1L' WHEN(class=2) THEN '1L to 10L' WHEN(class=3) THEN '10L to 1Cr' WHEN(class=4) THEN '1Cr to 10Cr' WHEN(class=5) THEN '>10Cr' END AS authorized_cap_range,COUNT(*) FROM (SELECT CASE WHEN (authorized_cap <= 1e5) THEN 1 WHEN (authorized_cap <= 1e6) THEN 2 WHEN (authorized_cap <= 1e7) THEN 3 WHEN (authorized_cap <= 1e8) THEN 4 ELSE 5 END AS class FROM maharashtra) AS classed_table GROUP BY class ORDER BY class;
 
 
-2. select case when(length(date_part)>2) then date_part when(cast(year_part as int) >= 0 and cast(year_part as int) <= 21) then '20'||year_part else '19'||year_part end as year,count(*) as no_registrations from (select split_part(registration_date,'-',1) as date_part,split_part(registration_date,'-',3) as year_part from maharashtra ) as divied_table group by year order by no_registrations desc limit 10;
+2. SELECT CASE WHEN(LENGTH(date_part)>2) THEN date_part WHEN(cast(year_part AS int) >= 0 AND cast(year_part AS int) <= 21) THEN '20'||year_part ELSE '19'||year_part END AS year,COUNT(*) AS no_registrations FROM (SELECT SPLIT_PART(registration_date,'-',1) AS date_part,SPLIT_PART(registration_date,'-',3) AS year_part FROM maharashtra ) AS divied_table GROUP BY year ORDER BY no_registrations DESC LIMIT 10;
 
-3. select district,count(*) as no_registrations from (select regexp_replace(registered_office_address, '^.* ', '') as pincode from maharashtra where length(split_part(registration_date,'-',1))<3 and split_part(registration_date,'-',3)='15') as temp join zipcode_district on substr(temp.pincode,1,4)=substr(zipcode_district.pincode,1,4) group by district order by no_registrations desc;
+3. SELECT district,COUNT(*) AS no_registrations FROM (SELECT REGEXP_REPLACE(registered_office_address, '^.* ', '') AS pincode FROM maharashtra WHERE LENGTH(SPLIT_PART(registration_date,'-',1))<3 AND SPLIT_PART(registration_date,'-',3)='15') AS temp JOIN zipcode_district on SUBSTR(temp.pincode,1,4)=SUBSTR(zipcode_district.pincode,1,4) GROUP BY district ORDER BY no_registrations DESC;
 
 
-4. with registrations_by_year_by_pba as (select '20'||year_part as year,pba,count(*) as no_registrations from (select split_part(registration_date,'-',3) as year_part,principal_business_activity as pba from maharashtra where length(split_part(registration_date,'-',1))<3 ) as filtered_table where cast(year_part as int)>=12 and cast(year_part as int)<=21 group by year,pba)
-select year,pba,no_registrations from registrations_by_year_by_pba where pba in (select top_pbas.pba from (select temp.pba,sum(temp.no_registrations) as count from registrations_by_year_by_pba as temp group by pba order by count desc limit 5) as top_pbas) order by year;
+4. WITH registrations_by_year_by_pba AS (SELECT '20'||year_part AS year,pba,COUNT(*) AS no_registrations FROM (SELECT SPLIT_PART(registration_date,'-',3) AS year_part,principal_business_activity AS pba FROM maharashtra WHERE LENGTH(SPLIT_PART(registration_date,'-',1))<3 ) AS filtered_table WHERE cast(year_part AS int)>=12 AND cast(year_part AS int)<=21 GROUP BY year,pba)
+SELECT year,pba,no_registrations FROM registrations_by_year_by_pba WHERE pba IN (SELECT top_pbas.pba FROM (SELECT temp.pba,SUM(temp.no_registrations) AS count FROM registrations_by_year_by_pba AS temp GROUP BY pba ORDER BY count DESC LIMIT 5) AS top_pbas) ORDER BY year;
 
 

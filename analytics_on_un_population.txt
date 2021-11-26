@@ -1,9 +1,9 @@
-1. select year,population from population_estimates where region='India';
+1. SELECT year,population FROM population_estimates WHERE region='India';
 
-2. select region,population from population_estimates where year=2014 and region in ('Brunei Darussalam','Cambodia','Indonesia','Lao People''s Democratic Republic','Malaysia','Myanmar','Philippines','Singapore','Thailand','Viet Nam');
+2. SELECT region,population FROM population_estimates WHERE year=2014 AND region IN ('Brunei Darussalam','Cambodia','Indonesia','Lao People''s Democratic Republic','Malaysia','Myanmar','Philippines','Singapore','Thailand','Viet Nam');
 
-3. select year,sum(population) as total_saarc_populations from population_estimates where region in ('Afghanistan','Bangladesh','Bhutan','India','Maldives','Nepal','Pakistan','Sri Lanka') group by year;
+3. SELECT year,sum(population) AS total_saarc_populations FROM population_estimates WHERE region IN ('Afghanistan','Bangladesh','Bhutan','India','Maldives','Nepal','Pakistan','Sri Lanka') GROUP BY year;
 
-4. select year,region,population from population_estimates where year>=2004 and year <= 2014 and region in ('Brunei Darussalam','Cambodia','Indonesia','Lao People''s Democratic Republic','Malaysia','Myanmar','Philippines','Singapore','Thailand','Viet Nam') order by year,region;
+4. SELECT year,region,population FROM population_estimates WHERE year>=2004 AND year <= 2014 AND region IN ('Brunei Darussalam','Cambodia','Indonesia','Lao People''s Democratic Republic','Malaysia','Myanmar','Philippines','Singapore','Thailand','Viet Nam') ORDER BY year,region;
 
 

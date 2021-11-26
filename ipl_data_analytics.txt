@@ -1,9 +1,9 @@
-1. select batting_team,sum(total_runs) as total_runs from deliveries group by batting_team order by total_runs desc;
+1. SELECT batting_team,SUM(total_runs) AS total_runs FROM deliveries GROUP BY batting_team ORDER BY total_runs DESC;
 
-2. select batsman,sum(batsman_runs) as total_runs from deliveries where batting_team = 'Royal Challengers Bangalore' group by batsman order by total_runs desc limit 10;
+2. SELECT batsman,SUM(batsman_runs) AS total_runs FROM deliveries WHERE batting_team = 'Royal Challengers Bangalore' GROUP BY batsman ORDER BY total_runs DESC LIMIT 10;
 
-3. select country,count(*) as no_of_umpires from umpires where country != ' India' group by country order by no_of_umpires desc;
+3. SELECT country,COUNT(*) AS no_of_umpires FROM umpires WHERE country != ' India' GROUP BY country ORDER BY no_of_umpires DESC;
 
-4. select season,team,count(*) as matches_played from (select season,team1 as team from matches union all select season,team2 from matches) as combined_matches group by season,team order by season,team;
+4. SELECT season,team,COUNT(*) AS matches_played FROM (SELECT season,team1 AS team FROM matches UNION ALL SELECT season,team2 FROM matches) AS combined_matches GROUP BY season,team ORDER BY season,team;
 
 
